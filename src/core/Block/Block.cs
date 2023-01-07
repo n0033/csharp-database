@@ -1,6 +1,6 @@
 
 
-namespace core.Block
+namespace CSharpDatabase.Core.Block
 {
 
   public class Block : IBlock
@@ -9,10 +9,16 @@ namespace core.Block
     byte[] FirstSector { get; }
     long Header
     {
-      get; set
+      get { return Header; }
+
+      set
       {
-        if ()
-    }
+        if (isDisposed)
+          throw new ObjectDisposedException("Block");
+
+
+
+      }
     }
 
     bool isDisposed = false;

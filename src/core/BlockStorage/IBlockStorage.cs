@@ -1,7 +1,7 @@
-using core.Block;
+using CSharpDatabase.Core.Block;
 
 
-namespace core.BlockStorage
+namespace CSharpDatabase.Core.BlockStorage
 {
 
   public interface IBlockStorage

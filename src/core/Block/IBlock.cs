@@ -1,5 +1,5 @@
 
-namespace core.Block
+namespace CSharpDatabase.Core.Block
 {
 
   public interface IBlock : IDisposable

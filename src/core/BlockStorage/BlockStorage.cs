@@ -1,4 +1,5 @@
 using System;
+using CSharpDatabase.Core.BlockStorage;
 
 
 namespace core.BlockStorage
@@ -30,11 +31,17 @@ namespace core.BlockStorage
     }
 
 
+    public IBlock? Find(uint id)
+    {
+
+    }
 
 
 
-    IBlock Get(uint id);
-    IBlock Create();
+    IBlock Create()
+    {
+
+    }
 
   }
 
