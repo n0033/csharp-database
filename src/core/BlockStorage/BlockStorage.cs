@@ -1,8 +1,8 @@
 using System;
-using CSharpDatabase.Core.BlockStorage;
+using CSharpDatabase.Core.Block;
 
 
-namespace core.BlockStorage
+namespace CSharpDatabase.Core.BlockStorage
 {
 
   public class BlockStorage : IBlockStorage
