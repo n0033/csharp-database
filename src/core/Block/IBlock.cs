@@ -1,19 +1,19 @@
 
-namespace CSharpDatabase.Core.Block
+namespace CSharpDatabase.Core
 {
 
   public interface IBlock : IDisposable
   {
 
-    uint id { get; }
+    uint Id { get; }
 
-    long GetHeader();
+    int GetHeader(BlockHeaderId headerId);
 
-    void SetHeader(long value);
+    void SetHeader(BlockHeaderId headerId, int value);
 
-    void Read(byte[] dst, int dstOffset, int srcOffset, int count);
+    void Read(byte[] dst, uint dstOffset, uint srcOffset, uint count);
 
-    void Write(byte[] src, int srcOffset, int dstOffset, int count);
+    void Write(byte[] src, uint srcOffset, uint dstOffset, uint count);
 
   }
 

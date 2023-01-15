@@ -1,17 +1,16 @@
 using System;
-using CSharpDatabase.Core.Block;
 
 
-namespace CSharpDatabase.Core.BlockStorage
+namespace CSharpDatabase.Core
 {
 
   public class BlockStorage : IBlockStorage
   {
     public Stream Stream { get; }
-    public int TotalBlockSize { get; }
-    public int BlockContentSize { get; }
-    public int BlockHeaderSize { get; }
-    public int DiskSectorSize { get; }
+    public uint TotalBlockSize { get; }
+    public uint BlockContentSize { get; }
+    public uint BlockHeaderSize { get; }
+    public uint DiskSectorSize { get; }
 
     // public Dictionary<uint, Block> blocks { get; }
 
