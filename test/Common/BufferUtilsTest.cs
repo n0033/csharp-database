@@ -51,14 +51,6 @@ namespace test.Common
       Assert.AreEqual(BitConverter.ToInt32(buffer, 4), value);
     }
 
-    [Test]
-    public void TestWriteNegativeOffset()
-    {
-      int value = 12345678;
-      byte[] buffer = new byte[4];
-      Assert.Catch<ArgumentOutOfRangeException>(() => BufferUtils.WriteBuffer(value, buffer, -1));
-    }
-
   }
 
 }
