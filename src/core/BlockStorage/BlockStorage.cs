@@ -11,10 +11,9 @@ namespace CSharpDatabase.Core
     public uint BlockContentSize { get; }
     public uint BlockHeaderSize { get; }
     public uint DiskSectorSize { get; }
+    readonly Dictionary<uint, IBlock> blocks = new Dictionary<uint, IBlock>();
 
-    // public Dictionary<uint, Block> blocks { get; }
-
-    public BlockStorage(Stream storage, int blockSize = 4096, int blockHeaderSize = 8, int diskSectorSize = 4096)
+    public BlockStorage(Stream storage, uint blockSize = 4096, uint blockHeaderSize = 8, uint diskSectorSize = 4096)
     {
       if (blockSize < blockHeaderSize)
         throw new ArgumentException("Block size must be greater than block header size");
@@ -32,14 +31,61 @@ namespace CSharpDatabase.Core
 
     public IBlock? Find(uint id)
     {
+      if (blocks.ContainsKey(id))
+      {
+        return blocks[id];
+      }
 
+      if (id * TotalBlockSize + TotalBlockSize > Stream.Length)
+      {
+        return null;
+      }
+
+      var firstSector = new byte[DiskSectorSize];
+      Stream.Position = id * TotalBlockSize;
+      Stream.Read(firstSector, 0, (int)DiskSectorSize);
+
+      var block = new Block(this, id, firstSector, Stream);
+
+      blocks[block.Id] = block;
+      block.Disposed += DisposeBlock
+
+      return block;
+    }
+
+
+    /// <summary>
+    /// Creates a new block
+    /// </summary>
+    public IBlock Create()
+    {
+      if ((this.Stream.Length % TotalBlockSize) != 0)
+      {
+        throw new DataMisalignedException("Stream length is not a multiple of block size");
+      }
+
+      var blockId = (uint)this.Stream.Length / TotalBlockSize;
+
+      // extend stream
+      this.Stream.SetLength((long)(blockId * TotalBlockSize + TotalBlockSize));
+      this.Stream.Flush();
+
+      var block = new Block(this, blockId, new byte[DiskSectorSize], this.Stream);
+
+      blocks[block.Id] = block;
+      block.Disposed += DisposeBlock
+
+      return block;
     }
 
 
 
-    IBlock Create()
+    protected virtual void DisposeBlock(object sender, EventArgs e)
     {
+      var block = (Block)sender;
+      block.Disposed -= DisposeBlock;
 
+      blocks.Remove(block.Id);
     }
 
   }

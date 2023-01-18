@@ -5,9 +5,9 @@ namespace CSharpDatabase.Core
 
   public interface IBlockStorage
   {
-    int BlockContentSize { get; }
-    int BlockHeaderSize { get; }
-    int BlockTotalSize { get; }
+    uint BlockContentSize { get; }
+    uint BlockHeaderSize { get; }
+    uint TotalBlockSize { get; }
 
     IBlock? Find(uint id);
     IBlock Create();
