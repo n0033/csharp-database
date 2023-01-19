@@ -3,6 +3,13 @@ namespace CSharpDatabase.Common
   public static class BufferUtils
   {
 
+    public static Guid ReadBufferGuid(byte[] buffer, uint offset)
+    {
+      var tempBuffer = new byte[16];
+      Buffer.BlockCopy(buffer, (int)offset, tempBuffer, 0, 16);
+      return new Guid(tempBuffer);
+    }
+
     public static int ReadBufferInt32(byte[] buffer, uint offset)
     {
       var tempBuffer = new byte[4];
@@ -39,6 +46,10 @@ namespace CSharpDatabase.Common
       return ByteConverter.ToDouble(tempBuffer);
     }
 
+    public static void WriteBuffer(Guid value, byte[] buffer, uint offset)
+    {
+      Buffer.BlockCopy(value.ToByteArray(), 0, buffer, (int)offset, 16);
+    }
     public static void WriteBuffer(int value, byte[] buffer, uint offset)
     {
       Buffer.BlockCopy(ByteConverter.ToBytes(value), 0, buffer, (int)offset, 4);

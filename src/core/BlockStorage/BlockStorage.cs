@@ -1,6 +1,3 @@
-using System;
-
-
 namespace CSharpDatabase.Core
 {
 
@@ -48,7 +45,7 @@ namespace CSharpDatabase.Core
       var block = new Block(this, id, firstSector, Stream);
 
       blocks[block.Id] = block;
-      block.Disposed += DisposeBlock
+      block.Disposed += DisposeBlock;
 
       return block;
     }
@@ -73,7 +70,7 @@ namespace CSharpDatabase.Core
       var block = new Block(this, blockId, new byte[DiskSectorSize], this.Stream);
 
       blocks[block.Id] = block;
-      block.Disposed += DisposeBlock
+      block.Disposed += DisposeBlock;
 
       return block;
     }
