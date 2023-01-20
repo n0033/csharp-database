@@ -13,7 +13,7 @@ namespace CSharpDatabase.Core
     public uint DiskSectorSize { get; }
     readonly Dictionary<uint, IBlock> blocks = new Dictionary<uint, IBlock>();
 
-    public BlockStorage(Stream storage, uint blockSize = 4096, uint blockHeaderSize = 8, uint diskSectorSize = 4096)
+    public BlockStorage(Stream storage, uint blockSize = 4096, uint blockHeaderSize = 24, uint diskSectorSize = 4096)
     {
       if (blockSize < blockHeaderSize)
         throw new ArgumentException("Block size must be greater than block header size");
