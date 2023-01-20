@@ -1,9 +1,10 @@
 ﻿using System;
 using System.IO;
 using System.Collections.Generic;
-using FooCore;
 
-namespace FooCore
+using CSharpDatabase.Common;
+
+namespace CSharpDatabase.Core
 {
   // Record storage service that store data in form of records, each record made up from one or several blocks
   // Blocks are connected in double-linked list (using kNextBlockId and kPreviousBlockId)
@@ -21,7 +22,6 @@ namespace FooCore
         throw new ArgumentNullException("storage");
 
       this.storage = storage;
-      Console.WriteLine("RecordStorage, block header size:" + this.storage.BlockHeaderSize);
 
       if (storage.BlockHeaderSize != 24)
       {
@@ -445,7 +445,7 @@ namespace FooCore
         throw new DataMisalignedException("Block content length not %4: " + contentLength);
 
       // Write value (first it has to be converted to byte[]) to destination_block
-      destination_block.Write(src: LittleEndianByteOrder.GetBytes(IdValue), srcOffset: 0, dstOffset: (uint)contentLength, count: 4);
+      destination_block.Write(src: ByteConverter.ToBytes(IdValue), srcOffset: 0, dstOffset: (uint)contentLength, count: 4);
     }
 
     // Read UInt32 (Id of some block) from source_block
@@ -462,7 +462,7 @@ namespace FooCore
 
       // Read value from source_block, convert it to UInt32 and return
       source_block.Read(dst: buffer, dstOffset: 0, srcOffset: (uint)contentLength - 4, count: 4);
-      return LittleEndianByteOrder.GetUInt32(buffer);
+      return ByteConverter.ToUInt32(buffer);
     }
 
     // Mark block as free by adding blockId to content of record_0
