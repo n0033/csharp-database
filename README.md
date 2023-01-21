@@ -1,5 +1,5 @@
-# Custom database written in C#
-Fast and memory efficient relational database.
+# Custom C# Database
+Fast and memory efficient relational database
 
 ### 
 - CRUD operations
