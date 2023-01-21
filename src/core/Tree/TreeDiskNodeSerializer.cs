@@ -4,8 +4,9 @@ using System.IO;
 
 using CSharpDatabase.Common;
 using CSharpDatabase.Common.Serializers;
+using CSharpDatabase.Core.Indexing.Interfaces;
 
-namespace CSharpDatabase.Core
+namespace CSharpDatabase.Core.Indexing
 {
   public sealed class TreeDiskNodeSerializer<K, V>
   {

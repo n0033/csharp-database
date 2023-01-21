@@ -1,4 +1,7 @@
-namespace CSharpDatabase.Core
+using CSharpDatabase.Core.Indexing.Interfaces;
+
+
+namespace CSharpDatabase.Core.Indexing
 {
 
   public class TreeNode<K, V>

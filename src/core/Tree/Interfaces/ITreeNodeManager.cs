@@ -1,6 +1,6 @@
 using CSharpDatabase.Common;
 
-namespace CSharpDatabase.Core
+namespace CSharpDatabase.Core.Indexing.Interfaces
 {
   public interface ITreeNodeManager<K, V>
   {
