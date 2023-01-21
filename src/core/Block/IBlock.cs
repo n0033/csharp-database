@@ -1,3 +1,5 @@
+using System;
+
 
 namespace CSharpDatabase.Core
 {
@@ -7,9 +9,9 @@ namespace CSharpDatabase.Core
 
     uint Id { get; }
 
-    int GetHeader(BlockHeaderId headerId);
+    uint GetHeader(BlockHeaderId headerId);
 
-    void SetHeader(BlockHeaderId headerId, int value);
+    void SetHeader(BlockHeaderId headerId, uint value);
 
     void Read(byte[] dst, uint dstOffset, uint srcOffset, uint count);
 

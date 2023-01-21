@@ -1,3 +1,5 @@
+using System;
+using System.IO;
 using CSharpDatabase.Common;
 namespace CSharpDatabase.Core
 {
@@ -7,8 +9,8 @@ namespace CSharpDatabase.Core
 
     bool isDisposed = false;
     bool isFirstSectorWritten = false;
-    public event EventHandler Disposed;
-    private int?[] Headers = new int?[5];
+    public event EventHandler? Disposed;
+    private uint?[] Headers = new uint?[5];
     BlockStorage Storage { get; }
     /// <summary>
     /// A reference to a persistent storage.
@@ -36,7 +38,7 @@ namespace CSharpDatabase.Core
       this.Stream = stream;
     }
 
-    public void SetHeader(BlockHeaderId headerId, int value)
+    public void SetHeader(BlockHeaderId headerId, uint value)
     {
       if (isDisposed)
         throw new ObjectDisposedException("Block");
@@ -46,16 +48,16 @@ namespace CSharpDatabase.Core
       this.isFirstSectorWritten = true;
     }
 
-    public int GetHeader(BlockHeaderId headerId)
+    public uint GetHeader(BlockHeaderId headerId)
     {
       if (isDisposed)
         throw new ObjectDisposedException("Block");
 
 
       if (Headers[(int)headerId] == null)
-        Headers[(int)headerId] = BufferUtils.ReadBufferInt32(FirstSector, (uint)headerId * sizeof(int));
+        Headers[(int)headerId] = BufferUtils.ReadBufferUInt32(FirstSector, (uint)headerId * sizeof(int));
 
-      return (int)Headers[(int)headerId]!;
+      return (uint)Headers[(int)headerId]!;
     }
 
     /// <summary>

@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.IO;
 
 
 namespace CSharpDatabase.Core
@@ -13,7 +15,10 @@ namespace CSharpDatabase.Core
     public uint DiskSectorSize { get; }
     readonly Dictionary<uint, IBlock> blocks = new Dictionary<uint, IBlock>();
 
-    public BlockStorage(Stream storage, uint blockSize = 4096, uint blockHeaderSize = 8, uint diskSectorSize = 4096)
+    public BlockStorage(Stream storage,
+                        uint blockSize = Constants.DEFAULT_BLOCK_SIZE,
+                        uint blockHeaderSize = Constants.DEFAULT_BLOCK_HEADER_SIZE,
+                        uint diskSectorSize = Constants.DEAFULT_DISK_SECTOR_SIZE)
     {
       if (blockSize < blockHeaderSize)
         throw new ArgumentException("Block size must be greater than block header size");
@@ -48,7 +53,7 @@ namespace CSharpDatabase.Core
       var block = new Block(this, id, firstSector, Stream);
 
       blocks[block.Id] = block;
-      block.Disposed += DisposeBlock
+      block.Disposed += DisposeBlock!;
 
       return block;
     }
@@ -73,7 +78,7 @@ namespace CSharpDatabase.Core
       var block = new Block(this, blockId, new byte[DiskSectorSize], this.Stream);
 
       blocks[block.Id] = block;
-      block.Disposed += DisposeBlock
+      block.Disposed += DisposeBlock!;
 
       return block;
     }
@@ -83,7 +88,7 @@ namespace CSharpDatabase.Core
     protected virtual void DisposeBlock(object sender, EventArgs e)
     {
       var block = (Block)sender;
-      block.Disposed -= DisposeBlock;
+      block.Disposed -= DisposeBlock!;
 
       blocks.Remove(block.Id);
     }
