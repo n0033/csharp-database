@@ -11,7 +11,7 @@ namespace test.Common
       int value = 12345678;
       byte[] buffer = new byte[4];
       BufferUtils.WriteBuffer(value, buffer, 0);
-      Assert.AreEqual(BitConverter.ToInt32(buffer, 0), value);
+      Assert.That(BitConverter.ToInt32(buffer, 0), Is.EqualTo(value));
     }
 
     [Test]
@@ -20,7 +20,7 @@ namespace test.Common
       uint value = 12345678;
       byte[] buffer = new byte[4];
       BufferUtils.WriteBuffer(value, buffer, 0);
-      Assert.AreEqual(BitConverter.ToInt32(buffer, 0), value);
+      Assert.That(BitConverter.ToInt32(buffer, 0), Is.EqualTo(value));
     }
 
 
@@ -30,7 +30,7 @@ namespace test.Common
       long value = 1234567812345675;
       byte[] buffer = new byte[8];
       BufferUtils.WriteBuffer(value, buffer, 0);
-      Assert.AreEqual(BitConverter.ToInt64(buffer, 0), value);
+      Assert.That(BitConverter.ToInt64(buffer, 0), Is.EqualTo(value));
     }
 
     [Test]
@@ -39,7 +39,7 @@ namespace test.Common
       double value = 123.123;
       byte[] buffer = new byte[8];
       BufferUtils.WriteBuffer(value, buffer, 0);
-      Assert.AreEqual(BitConverter.ToDouble(buffer, 0), value);
+      Assert.That(BitConverter.ToDouble(buffer, 0), Is.EqualTo(value));
     }
 
     [Test]
@@ -48,7 +48,7 @@ namespace test.Common
       int value = 12345678;
       byte[] buffer = new byte[8];
       BufferUtils.WriteBuffer(value, buffer, 4);
-      Assert.AreEqual(BitConverter.ToInt32(buffer, 4), value);
+      Assert.That(BitConverter.ToInt32(buffer, 4), Is.EqualTo(value));
     }
 
   }

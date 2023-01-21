@@ -1,9 +1,5 @@
-﻿using System;
-using FooCore;
-
-namespace FooApplication
+namespace CSharpDatabase.Common.Serializers
 {
-  // Just a thin wrapper around Guid.ToByteArray() to make it compatible with ISerializer[Guid]
   public class GuidSerializer : ISerializer<Guid>
   {
     public byte[] Serialize(Guid value)
@@ -11,12 +7,13 @@ namespace FooApplication
       return value.ToByteArray();
     }
 
-    public Guid Deserialize(byte[] buffer, int offset, int length)
+    public Guid Deserialize(byte[] buffer, uint offset, uint length)
     {
       if (length != 16)
-        throw new ArgumentException("length");
-
-      return BufferHelper.ReadBufferGuid(buffer, offset);
+      {
+        throw new ArgumentException("Guid length must be 16 bytes");
+      }
+      return BufferUtils.ReadBufferGuid(buffer, offset);
     }
 
     public bool IsFixedSize
