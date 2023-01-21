@@ -20,7 +20,7 @@ namespace CSharpDatabase.Core.Indexing
     {
       get
       {
-        return (object)Current;
+        return (object)Current!;
       }
     }
 

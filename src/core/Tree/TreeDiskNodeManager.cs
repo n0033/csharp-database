@@ -91,7 +91,7 @@ namespace CSharpDatabase.Core.Indexing
     }
 
 
-    public TreeNode<K, V> Create(IEnumerable<Tuple<K, V>> entries, IEnumerable<uint> childrenIds)
+    public TreeNode<K, V> Create(IEnumerable<Tuple<K, V>>? entries, IEnumerable<uint>? childrenIds)
     {
       // Create new record
       TreeNode<K, V>? node = null;

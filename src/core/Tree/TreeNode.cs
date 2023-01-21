@@ -39,21 +39,27 @@ namespace CSharpDatabase.Core.Indexing
     public TreeNode(ITreeNodeManager<K, V> nodeManager,
                     uint id,
                     uint parentId,
-                    IEnumerable<Tuple<K, V>> entries,
-                    IEnumerable<uint> childrenIds)
+                    IEnumerable<Tuple<K, V>>? entries,
+                    IEnumerable<uint>? childrenIds)
     {
       this.id = id;
       this.parentId = parentId;
       this.nodeManager = nodeManager;
       this.childrenIds = new List<uint>();
-      this.childrenIds.AddRange(childrenIds);
+      if (childrenIds != null)
+      {
+        this.childrenIds.AddRange(childrenIds);
+      }
       this.entries = new List<Tuple<K, V>>(this.nodeManager.MinEntriesPerNode * 2);
-      this.entries.AddRange(entries);
+      if (entries != null)
+      {
+        this.entries.AddRange(entries);
+      }
     }
 
     public TreeNode<K, V> GetChildNode(int atIndex)
     {
-      return nodeManager.Find(childrenIds[atIndex]);
+      return nodeManager.Find(childrenIds[atIndex])!;
     }
 
     public Tuple<K, V> GetEntry(int atIndex)
@@ -69,7 +75,7 @@ namespace CSharpDatabase.Core.Indexing
 
     public int SearchEntriesByKey(K key)
     {
-      return entries.BinarySearch(new Tuple<K, V>(key, default(V)), this.nodeManager.EntryComparer);
+      return entries.BinarySearch(new Tuple<K, V>(key, default(V)!), this.nodeManager.EntryComparer);
     }
 
     /// <summary>
@@ -78,7 +84,7 @@ namespace CSharpDatabase.Core.Indexing
     /// </summary>
     public int SearchEntriesByKey(K key, bool getFirstOccurence)
     {
-      int foundIndex = entries.BinarySearch(new Tuple<K, V>(key, default(V)), this.nodeManager.EntryComparer);
+      int foundIndex = entries.BinarySearch(new Tuple<K, V>(key, default(V)!), this.nodeManager.EntryComparer);
       if (foundIndex < 0)
         return foundIndex;
 
@@ -86,7 +92,7 @@ namespace CSharpDatabase.Core.Indexing
       {
         for (int i = foundIndex; i >= 0; i--)
         {
-          if (this.nodeManager.EntryComparer.Compare(entries[i], new Tuple<K, V>(key, default(V))) != 0)
+          if (this.nodeManager.EntryComparer.Compare(entries[i], new Tuple<K, V>(key, default(V)!)) != 0)
             return i + 1;
         }
         return foundIndex;
@@ -95,7 +101,7 @@ namespace CSharpDatabase.Core.Indexing
       {
         for (int i = foundIndex; i < entries.Count; i++)
         {
-          if (this.nodeManager.EntryComparer.Compare(entries[i], new Tuple<K, V>(key, default(V))) != 0)
+          if (this.nodeManager.EntryComparer.Compare(entries[i], new Tuple<K, V>(key, default(V)!)) != 0)
             return i - 1;
         }
         return foundIndex;
@@ -135,7 +141,7 @@ namespace CSharpDatabase.Core.Indexing
       }
       // continue search on the right most node
       var rightMostNode = nodeManager.Find(this.childrenIds[this.childrenIds.Count - 1]);
-      rightMostNode.FindLargest(out node, out index);
+      rightMostNode!.FindLargest(out node, out index);
     }
 
     /// <summary>
@@ -153,7 +159,7 @@ namespace CSharpDatabase.Core.Indexing
       }
       // continue search on the left most node
       var leftMostNode = nodeManager.Find(this.childrenIds[0]);
-      leftMostNode.FindSmallest(out node, out index);
+      leftMostNode!.FindSmallest(out node, out index);
     }
 
 
@@ -202,7 +208,7 @@ namespace CSharpDatabase.Core.Indexing
       // Create new node that holds all values
       // greater than the middle node
       var rightEntries = new Tuple<K, V>[halfCount];
-      var rightChildren = (uint[])null;
+      var rightChildren = (uint[])null!;
       entries.CopyTo(halfCount + 1, rightEntries, 0, rightEntries.Length);
 
       if (!IsLeaf) // copy children ids
@@ -210,14 +216,14 @@ namespace CSharpDatabase.Core.Indexing
         rightChildren = new uint[halfCount + 1];
         childrenIds.CopyTo(halfCount + 1, rightChildren, 0, rightChildren.Length);
       }
-      var newRightNode = nodeManager.Create(rightEntries, rightChildren);
+      var newRightNode = nodeManager.Create(rightEntries, rightChildren!);
 
       // update new children's parent id
       if (rightChildren != null)
       {
         foreach (var childId in rightChildren)
         {
-          nodeManager.Find(childId).ParentId = newRightNode.Id;
+          nodeManager.Find(childId)!.ParentId = newRightNode.Id;
         }
       }
 
@@ -297,7 +303,7 @@ namespace CSharpDatabase.Core.Indexing
       var parent = nodeManager.Find(parentId);
 
       // if the deficient node's right sibling exists and has more than the minimum number of elements, then rotate left
-      var rightSibling = ((indexInParent + 1) < parent.ChildrenNodeCount) ? parent.GetChildNode((int)(indexInParent + 1)) : null;
+      var rightSibling = ((indexInParent + 1) < parent!.ChildrenNodeCount) ? parent.GetChildNode((int)(indexInParent + 1)) : null;
       if ((rightSibling != null) && (rightSibling.EntriesCount > nodeManager.MinEntriesPerNode))
       {
         entries.Add(parent.GetEntry((int)indexInParent));
@@ -308,7 +314,7 @@ namespace CSharpDatabase.Core.Indexing
         if (!rightSibling.IsLeaf)
         {
           var firstSiblingChild = nodeManager.Find(rightSibling.childrenIds[0]);
-          firstSiblingChild.parentId = this.id;
+          firstSiblingChild!.parentId = this.id;
           nodeManager.MarkAsDirty(firstSiblingChild);
 
           childrenIds.Add(rightSibling.childrenIds[0]);
@@ -334,7 +340,7 @@ namespace CSharpDatabase.Core.Indexing
         if (!leftSibling.IsLeaf) // TODO check it
         {
           var lastSiblingChild = nodeManager.Find(leftSibling.childrenIds[leftSibling.childrenIds.Count - 1]);
-          lastSiblingChild.parentId = this.id;
+          lastSiblingChild!.parentId = this.id;
           nodeManager.MarkAsDirty(lastSiblingChild);
 
           childrenIds.Insert(0, leftSibling.childrenIds[leftSibling.childrenIds.Count - 1]);
@@ -353,7 +359,7 @@ namespace CSharpDatabase.Core.Indexing
       var seperatorParentIndex = rightSibling != null ? indexInParent : (indexInParent - 1);
 
       // move separator from parent to the left node
-      leftChild.entries.Add(parent.GetEntry((int)seperatorParentIndex));
+      leftChild!.entries.Add(parent.GetEntry((int)seperatorParentIndex));
 
       // Move all elements from the right node to the left 
       leftChild.entries.AddRange(rightChild.entries);
@@ -362,7 +368,7 @@ namespace CSharpDatabase.Core.Indexing
       foreach (var id in rightChild.childrenIds)
       {
         var currentNode = nodeManager.Find(id);
-        currentNode.parentId = leftChild.id;
+        currentNode!.parentId = leftChild.id;
         nodeManager.MarkAsDirty(currentNode); ;
       }
 
@@ -417,7 +423,7 @@ namespace CSharpDatabase.Core.Indexing
         TreeNode<K, V> largestNode;
         int largestNodeIndex;
         var leftSubTree = nodeManager.Find(this.childrenIds[removeAt]);
-        leftSubTree.FindLargest(out largestNode, out largestNodeIndex);
+        leftSubTree!.FindLargest(out largestNode, out largestNodeIndex);
         var replacementNode = largestNode.GetEntry(largestNodeIndex);
 
         this.entries[removeAt] = replacementNode;

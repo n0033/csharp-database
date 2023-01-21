@@ -22,13 +22,14 @@ namespace CSharpDatabase.Core.Indexing
 
     public void Insert(K key, V value)
     {
+
       // First find the node where key should be inserted
       var insertionIndex = 0;
-      var leafNode = FindNodeForInsertion(key, this.nodeManager.RootNode, ref insertionIndex);
+      var leafNode = FindNodeForInsertion(key, this.nodeManager.RootNode!, ref insertionIndex);
 
       if (insertionIndex >= 0 && !allowDuplicateKeys)
       {
-        throw new TreeKeyExistsException(key);
+        throw new TreeKeyExistsException(key!);
       }
 
       leafNode.InsertLeafNode(key, value, insertionIndex >= 0 ? insertionIndex : ~insertionIndex);
@@ -43,11 +44,15 @@ namespace CSharpDatabase.Core.Indexing
     }
 
 
-    public bool Delete(K key, V value, IComparer<V> valueComparer)
+    public bool Delete(K key, V value, IComparer<V>? valueComparer)
     {
       if (!allowDuplicateKeys)
       {
         throw new InvalidOperationException("When allowDuplicateKeys is false, use Delete(K key) instead.");
+      }
+      if (valueComparer == null)
+      {
+        throw new ArgumentNullException(nameof(valueComparer));
       }
 
       var deleted = false;
@@ -57,12 +62,12 @@ namespace CSharpDatabase.Core.Indexing
       {
         using (var enumerator = (TreeEnumerator<K, V>)FindLargerThanOrEqualTo(key).GetEnumerator())
         {
-          do
+          while (enumerator.MoveNext())
           {
             var entry = enumerator.Current;
 
             // bound reached, stop searching
-            if (nodeManager.KeyComparer.Compare(entry.Item1, key) > 0)
+            if (nodeManager.KeyComparer.Compare(entry!.Item1, key) > 0)
             {
               continueSearch = false;
               break;
@@ -72,10 +77,11 @@ namespace CSharpDatabase.Core.Indexing
             {
               enumerator.CurrentNode.Remove((int)enumerator.CurrentEntry);
               deleted = true;
+              continueSearch = false;
               break; // Get new enumerator
             }
 
-          } while (enumerator.MoveNext());
+          }
         }
       }
 
@@ -91,7 +97,7 @@ namespace CSharpDatabase.Core.Indexing
 
       using (var enumerator = (TreeEnumerator<K, V>)FindLargerThanOrEqualTo(key).GetEnumerator())
       {
-        if (enumerator.MoveNext() && (nodeManager.KeyComparer.Compare(enumerator.Current.Item1, key) == 0))
+        if (enumerator.MoveNext() && (nodeManager.KeyComparer.Compare(enumerator.Current!.Item1, key) == 0))
         {
           enumerator.CurrentNode.Remove((int)enumerator.CurrentEntry);
           return true;
@@ -104,7 +110,7 @@ namespace CSharpDatabase.Core.Indexing
     public Tuple<K, V>? Get(K key)
     {
       int foundIndex = -1;
-      TreeNode<K, V> node = this.FindNodeForInsertion(key, this.nodeManager.RootNode, ref foundIndex);
+      TreeNode<K, V> node = this.FindNodeForInsertion(key, this.nodeManager.RootNode!, ref foundIndex);
       if (foundIndex < 0)
         return null;
 
@@ -116,7 +122,7 @@ namespace CSharpDatabase.Core.Indexing
     public IEnumerable<Tuple<K, V>> FindLargerThanOrEqualTo(K key)
     {
       var startIterationIndex = 0;
-      var node = FindNodeForIteration(key, this.nodeManager.RootNode, true, ref startIterationIndex);
+      var node = FindNodeForIteration(key, this.nodeManager.RootNode!, true, ref startIterationIndex);
 
       return new TreeTraverser<K, V>(nodeManager,
                                      node,

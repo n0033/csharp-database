@@ -34,6 +34,14 @@ namespace CSharpDatabase.Common
     }
 
 
+    public static ulong ReadBufferUInt64(byte[] buffer, uint offset)
+    {
+      var tempBuffer = new byte[8];
+      Buffer.BlockCopy(buffer, (int)offset, tempBuffer, 0, sizeof(long));
+      return ByteConverter.ToUInt64(tempBuffer);
+    }
+
+
     public static float ReadBufferFloat(byte[] buffer, uint offset)
     {
       var tempBuffer = new byte[4];

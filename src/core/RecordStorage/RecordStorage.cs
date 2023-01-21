@@ -32,7 +32,7 @@ namespace CSharpDatabase.Core
 
     // *** Public Methods ***
 
-    public virtual byte[] Find(uint recordId)
+    public virtual byte[]? Find(uint recordId)
     {
       // First grab the block
       using (var block = storage.Find(recordId))
@@ -59,7 +59,7 @@ namespace CSharpDatabase.Core
         var bytesRead = 0;
 
         // Start filling data
-        IBlock currentBlock = block;
+        IBlock? currentBlock = block;
         while (true)
         {
           uint nextBlockId;
@@ -115,10 +115,10 @@ namespace CSharpDatabase.Core
         int numOfBlocksToBeWritten = (int)Math.Ceiling((double)dataTobeWritten / storage.BlockContentSize);
 
 
-        IBlock currentBlock = firstBlock;
+        IBlock? currentBlock = firstBlock;
         while (numOfBlocksToBeWritten > 0)
         {
-          IBlock nextBlock = null;
+          IBlock? nextBlock = null;
 
           using (currentBlock)
           {
@@ -192,14 +192,14 @@ namespace CSharpDatabase.Core
     {
       using (var block = storage.Find(recordId))
       {
-        IBlock currentBlock = block;
+        IBlock? currentBlock = block;
         while (true)
         {
-          IBlock nextBlock = null;
+          IBlock? nextBlock = null;
 
           using (currentBlock)
           {
-            MarkAsFree(currentBlock.Id);
+            MarkAsFree(currentBlock!.Id);
             currentBlock.SetHeader(BlockHeaderId.IsDeleted, 1);
 
             if (IsLastInRecord(currentBlock))
@@ -231,7 +231,7 @@ namespace CSharpDatabase.Core
         var blocksUsed = 0;
         int numOfBlocksToBeWritten = (int)Math.Ceiling((double)dataTobeWritten / storage.BlockContentSize);
 
-        var previousBlock = (IBlock)null;
+        var previousBlock = (IBlock)null!;
 
 
         while (blocksUsed < numOfBlocksToBeWritten)
@@ -248,7 +248,7 @@ namespace CSharpDatabase.Core
           // Find the block to write to:
           // If `blockIndex` exists in `blocks`, then write into it,
           // otherwise allocate a new one for writting
-          IBlock target = null;
+          IBlock? target = null;
           if (blockIndex < blocks.Count)
           {
             target = blocks[blockIndex];
@@ -361,7 +361,7 @@ namespace CSharpDatabase.Core
     IBlock AllocateBlock()
     {
       uint resuableBlockId;
-      IBlock newBlock;
+      IBlock? newBlock;
 
       // If there isn't any freed block - create new one
       if (TryFindFreeBlock(out resuableBlockId) == false)
@@ -393,13 +393,13 @@ namespace CSharpDatabase.Core
     bool TryFindFreeBlock(out uint blockId)
     {
       blockId = 0;
-      IBlock lastBlock, preLastBlock;
+      IBlock? lastBlock, preLastBlock;
       GetSpaceTrackingBlock(out lastBlock, out preLastBlock);
 
       using (lastBlock)
       using (preLastBlock)
       {
-        var currentBlockContentLength = lastBlock.GetHeader(BlockHeaderId.ContentLength);
+        var currentBlockContentLength = lastBlock!.GetHeader(BlockHeaderId.ContentLength);
 
         // If last block is empty, try to take pre last block
         if (currentBlockContentLength == 0)
@@ -469,7 +469,7 @@ namespace CSharpDatabase.Core
     // record_0 is used as stack with Id's of freed blocks
     void MarkAsFree(uint blockId)
     {
-      IBlock lastBlock, preLastBlock, targetBlock = null;
+      IBlock? lastBlock, preLastBlock, targetBlock = null;
       GetSpaceTrackingBlock(out lastBlock, out preLastBlock);
 
       using (lastBlock)
@@ -477,7 +477,7 @@ namespace CSharpDatabase.Core
       {
         try
         {
-          var contentLength = lastBlock.GetHeader(BlockHeaderId.ContentLength);
+          var contentLength = lastBlock!.GetHeader(BlockHeaderId.ContentLength);
 
           // If there is some space left in last record 0's block just use it
           if ((contentLength + 4) <= storage.BlockContentSize)
@@ -514,7 +514,7 @@ namespace CSharpDatabase.Core
     }
 
     // Get the last 2 blocks from the free space tracking record_0
-    void GetSpaceTrackingBlock(out IBlock lastBlock, out IBlock preLastBlock)
+    void GetSpaceTrackingBlock(out IBlock? lastBlock, out IBlock? preLastBlock)
     {
       lastBlock = null;
       preLastBlock = null;

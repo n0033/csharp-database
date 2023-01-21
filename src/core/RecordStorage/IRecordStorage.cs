@@ -17,7 +17,7 @@ namespace CSharpDatabase.Core
     /// <summary>
     /// Grab a record's data
     /// </summary>
-    byte[] Find(uint recordId);
+    byte[]? Find(uint recordId);
 
     /// <summary>
     /// This creates new empty record

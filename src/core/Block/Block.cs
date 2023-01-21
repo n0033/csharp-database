@@ -9,7 +9,7 @@ namespace CSharpDatabase.Core
 
     bool isDisposed = false;
     bool isFirstSectorWritten = false;
-    public event EventHandler Disposed;
+    public event EventHandler? Disposed;
     private uint?[] Headers = new uint?[5];
     BlockStorage Storage { get; }
     /// <summary>

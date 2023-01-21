@@ -38,6 +38,14 @@ namespace CSharpDatabase.Common
       return bytes;
     }
 
+    public static byte[] ToBytes(ulong value, string byteOrder = "little")
+    {
+      var bytes = BitConverter.GetBytes(value);
+      if (computerArchitecture != byteOrder)
+        Reverse(bytes);
+      return bytes;
+    }
+
     public static byte[] ToBytes(float value, string byteOrder = "little")
     {
       var bytes = BitConverter.GetBytes(value);
@@ -68,6 +76,11 @@ namespace CSharpDatabase.Common
     public static long ToInt64(byte[] bytes)
     {
       return BitConverter.ToInt64(bytes, 0);
+    }
+
+    public static ulong ToUInt64(byte[] bytes)
+    {
+      return BitConverter.ToUInt64(bytes, 0);
     }
 
     public static float ToSingle(byte[] bytes)

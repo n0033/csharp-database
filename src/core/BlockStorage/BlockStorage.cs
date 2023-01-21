@@ -53,7 +53,7 @@ namespace CSharpDatabase.Core
       var block = new Block(this, id, firstSector, Stream);
 
       blocks[block.Id] = block;
-      block.Disposed += DisposeBlock;
+      block.Disposed += DisposeBlock!;
 
       return block;
     }
@@ -78,7 +78,7 @@ namespace CSharpDatabase.Core
       var block = new Block(this, blockId, new byte[DiskSectorSize], this.Stream);
 
       blocks[block.Id] = block;
-      block.Disposed += DisposeBlock;
+      block.Disposed += DisposeBlock!;
 
       return block;
     }
@@ -88,7 +88,7 @@ namespace CSharpDatabase.Core
     protected virtual void DisposeBlock(object sender, EventArgs e)
     {
       var block = (Block)sender;
-      block.Disposed -= DisposeBlock;
+      block.Disposed -= DisposeBlock!;
 
       blocks.Remove(block.Id);
     }
