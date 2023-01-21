@@ -12,7 +12,7 @@ namespace CSharpDatabase.Core
   {
     readonly IBlockStorage storage;
 
-    const int MaxRecordSize = 4194304;  // 4MB
+    const int MaxRecordSize = Constants.MAX_RECORD_SIZE;
 
     // *** Constructors ***
 
@@ -23,7 +23,7 @@ namespace CSharpDatabase.Core
 
       this.storage = storage;
 
-      if (storage.BlockHeaderSize != 24)
+      if (storage.BlockHeaderSize < Constants.DEFAULT_BLOCK_HEADER_SIZE)
       {
         throw new ArgumentException("Record storage needs at least 24 header bytes");
       }
@@ -105,7 +105,7 @@ namespace CSharpDatabase.Core
         byte[] data = dataGenerator(returnId);
         int written = 0;
         int dataTobeWritten = data.Length;
-        firstBlock.SetHeader(BlockHeaderId.RecordLength, dataTobeWritten);
+        firstBlock.SetHeader(BlockHeaderId.RecordLength, (uint)dataTobeWritten);
 
         // If no data tobe written, return this block
         if (dataTobeWritten == 0)
@@ -129,7 +129,7 @@ namespace CSharpDatabase.Core
               dataToBeWrittenInBlock = dataTobeWritten - written;
 
             currentBlock.Write(data, (uint)written, 0, (uint)dataToBeWrittenInBlock);
-            currentBlock.SetHeader(BlockHeaderId.ContentLength, dataToBeWrittenInBlock);
+            currentBlock.SetHeader(BlockHeaderId.ContentLength, (uint)dataToBeWrittenInBlock);
             written += dataToBeWrittenInBlock;
 
             numOfBlocksToBeWritten--;
@@ -143,8 +143,8 @@ namespace CSharpDatabase.Core
               // If something go wrong, nextBlock has to be disposed
               try
               {
-                nextBlock.SetHeader(BlockHeaderId.PreviousBlockId, (int)currentBlock.Id);
-                currentBlock.SetHeader(BlockHeaderId.NextBlockId, (int)nextBlock.Id);
+                nextBlock.SetHeader(BlockHeaderId.PreviousBlockId, currentBlock.Id);
+                currentBlock.SetHeader(BlockHeaderId.NextBlockId, nextBlock.Id);
                 success = true;
               }
               finally
@@ -266,17 +266,17 @@ namespace CSharpDatabase.Core
           // Link with previous block
           if (previousBlock != null)
           {
-            previousBlock.SetHeader(BlockHeaderId.NextBlockId, (int)target.Id);
-            target.SetHeader(BlockHeaderId.PreviousBlockId, (int)previousBlock.Id);
+            previousBlock.SetHeader(BlockHeaderId.NextBlockId, target.Id);
+            target.SetHeader(BlockHeaderId.PreviousBlockId, previousBlock.Id);
           }
 
           // Write data
           target.Write(src: data, srcOffset: (uint)written, dstOffset: 0, count: (uint)dataToBeWrittenInBlock);
-          target.SetHeader(BlockHeaderId.ContentLength, (int)dataToBeWrittenInBlock);
+          target.SetHeader(BlockHeaderId.ContentLength, (uint)dataToBeWrittenInBlock);
           target.SetHeader(BlockHeaderId.NextBlockId, 0);
 
           if (written == 0)
-            target.SetHeader(BlockHeaderId.RecordLength, dataTobeWritten);
+            target.SetHeader(BlockHeaderId.RecordLength, (uint)dataTobeWritten);
 
 
           blocksUsed++;
@@ -490,8 +490,8 @@ namespace CSharpDatabase.Core
           {
             targetBlock = storage.Create();
 
-            targetBlock.SetHeader(BlockHeaderId.PreviousBlockId, (int)lastBlock.Id);
-            lastBlock.SetHeader(BlockHeaderId.NextBlockId, (int)targetBlock.Id);
+            targetBlock.SetHeader(BlockHeaderId.PreviousBlockId, lastBlock.Id);
+            lastBlock.SetHeader(BlockHeaderId.NextBlockId, targetBlock.Id);
 
             contentLength = 0;
           }

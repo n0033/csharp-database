@@ -8,41 +8,28 @@ namespace CSharpDatabase.Core
     /// Minimum number of entries per node. Maximum number of entries
     /// must be equal to MinEntriesCountPerNode*2
     /// </summary>
-    ushort MinEntriesPerNode
-    {
-      get;
-    }
-
-    IComparer<K> KeyComparer
-    {
-      get;
-    }
+    ushort MinEntriesPerNode { get; }
+    IComparer<K> KeyComparer { get; }
 
     /// <summary>
     /// This should use KeyComparer declared above
     /// </summary>
-    IComparer<Tuple<K, V>> EntryComparer
-    {
-      get;
-    }
+    IComparer<Tuple<K, V>> EntryComparer { get; }
 
     /// <summary>
     /// Root node should be cached, because it called very often
     /// </summary>
-    TreeNode<K, V> RootNode
-    {
-      get;
-    }
+    TreeNode<K, V>? RootNode { get; }
 
     /// <summary>
-    /// Creates a new node that carries given entires, and keep references to given children nodes
+    /// Creates a new node that carries given entries, and keep references to given children nodes
     /// </summary>
     TreeNode<K, V> Create(IEnumerable<Tuple<K, V>> entries, IEnumerable<uint> childrenIds);
 
-    TreeNode<K, V> Find(uint nodeId);
+    TreeNode<K, V>? Find(uint nodeId);
 
     /// <summary>
-    /// Called by the tree to split a current root node to a new root node.
+    /// Called by the tree to split a current root node to a new root node
     /// </summary>
     TreeNode<K, V> CreateNewRoot(K key, V value, uint leftNodeId, uint rightNodeId);
 
