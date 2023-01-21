@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
+
 using CSharpDatabase.Common;
 using CSharpDatabase.Common.Serializers;
+using CSharpDatabase.Core.Indexing.Interfaces;
 
-namespace CSharpDatabase.Core
+namespace CSharpDatabase.Core.Indexing
 {
 
   public class TreeDiskNodeManager<K, V> : ITreeNodeManager<K, V>
