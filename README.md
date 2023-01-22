@@ -4,7 +4,6 @@ Fast and memory efficient relational database
 ### 
 - CRUD operations
 - B-Tree based indexes
-- object serialization
 - database and indexes are stores in separate files
 
 ### Running
