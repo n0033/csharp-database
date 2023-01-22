@@ -2,7 +2,6 @@
 
 namespace CSharpDatabase.Application
 {
-  // Our database stores cows, first we define our Cow model
   public class BankAccountModel
   {
     public Guid Id

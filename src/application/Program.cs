@@ -2,24 +2,18 @@
 using System.IO;
 using System.Collections.Generic;
 
-/// <summary>
-/// Demo application on how to use FooCore to define a database and query data
-/// </summary>
 namespace CSharpDatabase.Application
 {
   class MainClass
   {
     public static void Main(string[] args)
     {
-      // For demonstartion purpose, our cow database is saved into a temp file
-      var dbFile = Path.Combine(".", "cowdb.data");
+      var dbFile = Path.Combine(".", "bank.data");
 
       try
       {
-        // Init the cow db based on a file on temp directory
         using (var db = new BankAccountsDatabase(dbFile))
         {
-          // Insert some cows into our database..
           db.Insert(new BankAccountModel
           (
             id: Guid.Parse("8872d8ba-e470-440d-aa9b-071822e8053f"),

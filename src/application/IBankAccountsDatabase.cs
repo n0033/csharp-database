@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace CSharpDatabase.Application
 {
-  public interface ICowDatabase
+  public interface IBankAccountsDatabase
   {
     void Insert(BankAccountModel account);
     bool Delete(Guid id);

@@ -135,6 +135,7 @@ namespace CSharpDatabase.Core.Indexing
         root = null;
 
       recordStorage.Delete(node.Id);
+      nodeCache.Remove(node.Id);
 
       if (dirtyNodes.ContainsKey(node.Id))
         dirtyNodes.Remove(node.Id);

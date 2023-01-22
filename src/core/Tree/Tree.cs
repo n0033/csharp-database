@@ -6,7 +6,7 @@ namespace CSharpDatabase.Core.Indexing
 {
 
 
-  class Tree<K, V> : ITree<K, V>
+  public class Tree<K, V> : ITree<K, V>
   {
 
     readonly ITreeNodeManager<K, V> nodeManager;
