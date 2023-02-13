@@ -1,5 +1,5 @@
 # C# Database
-Fast and memory efficient relational database
+Fast and memory efficient relational database built from scratch
 
 ### 
 - CRUD operations
