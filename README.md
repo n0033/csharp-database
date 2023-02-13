@@ -1,4 +1,4 @@
-# Custom C# Database
+# C# Database
 Fast and memory efficient relational database
 
 ### 
